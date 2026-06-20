@@ -21,11 +21,11 @@ function isLocked(kickoff: string, now: number) {
   return now >= new Date(kickoff).getTime() - LOCK_BEFORE_MS
 }
 
-// Kickoff time rendered in Athens time, derived from the same timestamp the
-// lock uses — so what players see always matches when the match locks.
-function athensTime(kickoff: string) {
+// Kickoff time rendered in Central European Time, derived from the same
+// timestamp the lock uses — so what players see always matches when it locks.
+function cetTime(kickoff: string) {
   return new Date(kickoff).toLocaleTimeString('en-GB', {
-    timeZone: 'Europe/Athens',
+    timeZone: 'Europe/Zurich',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
@@ -294,8 +294,8 @@ function App() {
 
               <div className="center">
                 <div className="datetime">
-                  {m.date}, {athensTime(m.kickoff)}{' '}
-                  <span className="tz">(Athens time)</span>
+                  {m.date}, {cetTime(m.kickoff)}{' '}
+                  <span className="tz">(CET)</span>
                 </div>
                 <div className="venue">{m.venue}</div>
                 {locked && <div className="lock-badge">🔒 Locked</div>}
@@ -320,7 +320,8 @@ function App() {
       <p className="hint">
         Picks save automatically in this browser — click{' '}
         <strong>Submit predictions</strong> to send them in. Each match locks 5
-        minutes before kickoff (Athens time) and can't be changed after that.
+        minutes before kickoff (Central European Time) and can't be changed after
+        that.
       </p>
         </>
       )}
