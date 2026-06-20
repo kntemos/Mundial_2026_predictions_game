@@ -21,6 +21,17 @@ function isLocked(kickoff: string, now: number) {
   return now >= new Date(kickoff).getTime() - LOCK_BEFORE_MS
 }
 
+// Kickoff time rendered in Athens time, derived from the same timestamp the
+// lock uses — so what players see always matches when the match locks.
+function athensTime(kickoff: string) {
+  return new Date(kickoff).toLocaleTimeString('en-GB', {
+    timeZone: 'Europe/Athens',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+}
+
 // Deployed Google Apps Script Web App URL. Set in .env.local — see
 // GOOGLE_SHEET_SETUP.md. If empty, the Submit button falls back to export.
 const SHEET_ENDPOINT = import.meta.env.VITE_SHEET_ENDPOINT as string | undefined
@@ -283,7 +294,8 @@ function App() {
 
               <div className="center">
                 <div className="datetime">
-                  {m.date}, {m.time}
+                  {m.date}, {athensTime(m.kickoff)}{' '}
+                  <span className="tz">(Athens time)</span>
                 </div>
                 <div className="venue">{m.venue}</div>
                 {locked && <div className="lock-badge">🔒 Locked</div>}
