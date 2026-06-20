@@ -1,6 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { matches, type Team } from './matches'
 import './App.css'
+
+// Lazy-loaded so the charting library only downloads when Standings is opened.
+const Standings = lazy(() =>
+  import('./Standings').then((m) => ({ default: m.Standings })),
+)
 
 // One prediction = the two scores a player entered for a match.
 type Prediction = { home: number | ''; away: number | '' }
@@ -80,6 +85,7 @@ function App() {
     initial.predictions,
   )
   const [status, setStatus] = useState<SubmitStatus>('idle')
+  const [view, setView] = useState<'predict' | 'standings'>('predict')
 
   // Auto-save to this browser whenever anything changes.
   useEffect(() => {
@@ -181,6 +187,30 @@ function App() {
     <div className="app">
       <header className="app-header">
         <h1>Mundial 2026 — Predictions</h1>
+        <nav className="tabs">
+          <button
+            type="button"
+            className={view === 'predict' ? 'tab active' : 'tab'}
+            onClick={() => setView('predict')}
+          >
+            Make predictions
+          </button>
+          <button
+            type="button"
+            className={view === 'standings' ? 'tab active' : 'tab'}
+            onClick={() => setView('standings')}
+          >
+            Standings
+          </button>
+        </nav>
+      </header>
+
+      {view === 'standings' ? (
+        <Suspense fallback={<p className="standings-msg">Loading…</p>}>
+          <Standings />
+        </Suspense>
+      ) : (
+        <>
         <div className="player-row">
           <label htmlFor="player">Your name</label>
           <input
@@ -215,7 +245,6 @@ function App() {
             Couldn't submit. Check your connection, or use “Export file” instead.
           </p>
         )}
-      </header>
 
       <div className="fixtures">
         {matches.map((m) => {
@@ -260,6 +289,8 @@ function App() {
         click <strong>Export my predictions</strong> and send the file to whoever
         is collecting them.
       </p>
+        </>
+      )}
     </div>
   )
 }

@@ -253,3 +253,76 @@
     grid-column: 1 / -1;
   }
 }
+
+/* ---- Tabs ---- */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.tab {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+}
+.tab.active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* ---- Standings ---- */
+.standings {
+  padding: 0 4px;
+}
+.standings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.standings-head h2 {
+  margin: 0;
+}
+.standings-msg {
+  text-align: center;
+  color: var(--text);
+  padding: 48px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+}
+.standings-table th,
+.standings-table td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.standings-table th {
+  color: var(--text-h);
+  font-size: 14px;
+}
+.standings-table td:first-child,
+.standings-table th:first-child {
+  width: 56px;
+  text-align: center;
+}
+.standings-table td:last-child,
+.standings-table th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

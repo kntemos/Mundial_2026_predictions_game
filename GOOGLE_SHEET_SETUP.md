@@ -56,8 +56,38 @@ function doPost(e) {
   }
 }
 
+// Returns all predictions + entered results as JSON, so the app's "Standings"
+// tab can draw the cumulative points chart. GET requests are readable from the
+// browser (the response is served with Access-Control-Allow-Origin: *).
 function doGet() {
-  return ContentService.createTextOutput('Mundial 2026 predictions endpoint is live.');
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var out = { predictions: [], results: [] };
+
+  var preds = ss.getSheetByName('Predictions');
+  if (preds && preds.getLastRow() > 1) {
+    var pv = preds.getDataRange().getValues();
+    for (var i = 1; i < pv.length; i++) {
+      out.predictions.push({
+        player: (pv[i][1] || '').toString().trim(),
+        match: pv[i][2],
+        homeScore: pv[i][6],
+        awayScore: pv[i][7]
+      });
+    }
+  }
+
+  var results = ss.getSheetByName('Results');
+  if (results && results.getLastRow() > 1) {
+    var rv = results.getDataRange().getValues();
+    for (var j = 1; j < rv.length; j++) {
+      if (rv[j][3] !== '' && rv[j][4] !== '') {
+        out.results.push({ match: rv[j][0], homeGoals: rv[j][3], awayGoals: rv[j][4] });
+      }
+    }
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(out))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 /* ===================== Scoring & standings ===================== */
