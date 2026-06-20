@@ -14,6 +14,13 @@ type Predictions = Record<string, Prediction>
 const STORAGE_KEY = 'mundial2026-predictions'
 const SCORE_OPTIONS = Array.from({ length: 11 }, (_, i) => i) // 0..10
 
+// Predictions for a match lock this many ms before its kickoff.
+const LOCK_BEFORE_MS = 5 * 60 * 1000
+
+function isLocked(kickoff: string, now: number) {
+  return now >= new Date(kickoff).getTime() - LOCK_BEFORE_MS
+}
+
 // Deployed Google Apps Script Web App URL. Set in .env.local — see
 // GOOGLE_SHEET_SETUP.md. If empty, the Submit button falls back to export.
 const SHEET_ENDPOINT = import.meta.env.VITE_SHEET_ENDPOINT as string | undefined
@@ -54,16 +61,19 @@ function ScoreSelect({
   value,
   onChange,
   label,
+  disabled,
 }: {
   value: number | ''
   onChange: (v: number | '') => void
   label: string
+  disabled?: boolean
 }) {
   return (
     <select
       className="score"
       aria-label={label}
       value={value}
+      disabled={disabled}
       onChange={(e) =>
         onChange(e.target.value === '' ? '' : Number(e.target.value))
       }
@@ -86,11 +96,18 @@ function App() {
   )
   const [status, setStatus] = useState<SubmitStatus>('idle')
   const [view, setView] = useState<'predict' | 'standings'>('predict')
+  const [now, setNow] = useState(() => Date.now())
 
   // Auto-save to this browser whenever anything changes.
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ player, predictions }))
   }, [player, predictions])
+
+  // Tick every 30s so matches lock live as kickoff approaches.
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 30_000)
+    return () => clearInterval(id)
+  }, [])
 
   function setScore(matchId: string, side: 'home' | 'away', v: number | '') {
     setStatus('idle')
@@ -249,8 +266,9 @@ function App() {
       <div className="fixtures">
         {matches.map((m) => {
           const p = predictions[m.id] ?? { home: '', away: '' }
+          const locked = isLocked(m.kickoff, now)
           return (
-            <div className="match" key={m.id}>
+            <div className={locked ? 'match locked' : 'match'} key={m.id}>
               <div className="team team-home">
                 <span className="team-name">{m.home.name}</span>
                 <Flag team={m.home} />
@@ -260,6 +278,7 @@ function App() {
                 label={`${m.home.name} score`}
                 value={p.home}
                 onChange={(v) => setScore(m.id, 'home', v)}
+                disabled={locked}
               />
 
               <div className="center">
@@ -267,12 +286,14 @@ function App() {
                   {m.date}, {m.time}
                 </div>
                 <div className="venue">{m.venue}</div>
+                {locked && <div className="lock-badge">🔒 Locked</div>}
               </div>
 
               <ScoreSelect
                 label={`${m.away.name} score`}
                 value={p.away}
                 onChange={(v) => setScore(m.id, 'away', v)}
+                disabled={locked}
               />
 
               <div className="team team-away">
@@ -285,9 +306,9 @@ function App() {
       </div>
 
       <p className="hint">
-        Your picks are saved automatically in this browser. When you're done,
-        click <strong>Export my predictions</strong> and send the file to whoever
-        is collecting them.
+        Picks save automatically in this browser — click{' '}
+        <strong>Submit predictions</strong> to send them in. Each match locks 5
+        minutes before kickoff (Athens time) and can't be changed after that.
       </p>
         </>
       )}

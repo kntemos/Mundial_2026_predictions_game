@@ -13,9 +13,13 @@ export type Match = {
   /** e.g. "19:00" */
   time: string
   venue: string
+  /** ISO 8601 kickoff with timezone offset (Athens / EEST = UTC+3 in June). */
+  kickoff: string
 }
 
 // The next Mundial 2026 fixtures. Add or edit matches here.
+// `date`/`time` are display labels; `kickoff` is the real timestamp used to
+// lock predictions 5 minutes before kickoff — keep the two in sync.
 export const matches: Match[] = [
   {
     id: 'ned-swe',
@@ -24,6 +28,7 @@ export const matches: Match[] = [
     date: '20th June',
     time: '19:00',
     venue: 'Houston',
+    kickoff: '2026-06-20T19:00:00+03:00',
   },
   {
     id: 'ger-civ',
@@ -32,6 +37,7 @@ export const matches: Match[] = [
     date: '20th June',
     time: '22:00',
     venue: 'Toronto',
+    kickoff: '2026-06-20T22:00:00+03:00',
   },
   {
     id: 'ecu-cuw',
@@ -40,6 +46,7 @@ export const matches: Match[] = [
     date: '21st June',
     time: '02:00',
     venue: 'Kansas City',
+    kickoff: '2026-06-21T02:00:00+03:00',
   },
   {
     id: 'tun-jpn',
@@ -48,6 +55,7 @@ export const matches: Match[] = [
     date: '21st June',
     time: '06:00',
     venue: 'Monterrey (Guadalupe)',
+    kickoff: '2026-06-21T06:00:00+03:00',
   },
   {
     id: 'esp-ksa',
@@ -56,6 +64,7 @@ export const matches: Match[] = [
     date: '21st June',
     time: '18:00',
     venue: 'Atlanta',
+    kickoff: '2026-06-21T18:00:00+03:00',
   },
   {
     id: 'bel-irn',
@@ -64,5 +73,6 @@ export const matches: Match[] = [
     date: '21st June',
     time: '21:00',
     venue: 'Los Angeles (Inglewood)',
+    kickoff: '2026-06-21T21:00:00+03:00',
   },
 ]

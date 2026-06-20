@@ -226,6 +226,22 @@
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
+.score:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background-image: none;
+  padding-right: 14px;
+}
+
+.lock-badge {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.match.locked .team-name {
+  opacity: 0.7;
+}
 
 .hint {
   text-align: center;
