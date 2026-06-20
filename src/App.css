@@ -3,6 +3,64 @@
   padding: 0 8px 48px;
 }
 
+/* ---- Password gate ---- */
+.gate {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.gate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 360px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.gate-card h1 {
+  font-size: 26px;
+  margin: 0;
+}
+.gate-card p {
+  color: var(--text);
+}
+.gate-input {
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+.gate-btn {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+}
+.gate-btn:hover {
+  filter: brightness(1.08);
+}
+.gate-error {
+  color: #dc2626;
+  font-size: 14px;
+  margin: 0;
+}
+
 /* ---- Header ---- */
 .app-header {
   text-align: center;
