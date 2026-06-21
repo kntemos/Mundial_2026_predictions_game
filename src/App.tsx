@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
-import { matches, type Team } from './matches'
+import { matches, type Match, type Team } from './matches'
 import './App.css'
 
 // Lazy-loaded so the charting library only downloads when Standings is opened.
@@ -108,6 +108,7 @@ function App() {
   const [status, setStatus] = useState<SubmitStatus>('idle')
   const [view, setView] = useState<'predict' | 'standings'>('predict')
   const [now, setNow] = useState(() => Date.now())
+  const [showPast, setShowPast] = useState(false)
 
   // Auto-save to this browser whenever anything changes.
   useEffect(() => {
@@ -211,6 +212,49 @@ function App() {
     }
   }
 
+  const pastMatches = matches.filter((m) => isLocked(m.kickoff, now))
+  const upcomingMatches = matches.filter((m) => !isLocked(m.kickoff, now))
+
+  function renderMatch(m: Match) {
+    const p = predictions[m.id] ?? { home: '', away: '' }
+    const locked = isLocked(m.kickoff, now)
+    return (
+      <div className={locked ? 'match locked' : 'match'} key={m.id}>
+        <div className="team team-home">
+          <span className="team-name">{m.home.name}</span>
+          <Flag team={m.home} />
+        </div>
+
+        <ScoreSelect
+          label={`${m.home.name} score`}
+          value={p.home}
+          onChange={(v) => setScore(m.id, 'home', v)}
+          disabled={locked}
+        />
+
+        <div className="center">
+          <div className="datetime">
+            {m.date}, {cetTime(m.kickoff)} <span className="tz">(CET)</span>
+          </div>
+          <div className="venue">{m.venue}</div>
+          {locked && <div className="lock-badge">🔒 Locked</div>}
+        </div>
+
+        <ScoreSelect
+          label={`${m.away.name} score`}
+          value={p.away}
+          onChange={(v) => setScore(m.id, 'away', v)}
+          disabled={locked}
+        />
+
+        <div className="team team-away">
+          <span className="team-name">{m.away.name}</span>
+          <Flag team={m.away} />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -275,46 +319,22 @@ function App() {
         )}
 
       <div className="fixtures">
-        {matches.map((m) => {
-          const p = predictions[m.id] ?? { home: '', away: '' }
-          const locked = isLocked(m.kickoff, now)
-          return (
-            <div className={locked ? 'match locked' : 'match'} key={m.id}>
-              <div className="team team-home">
-                <span className="team-name">{m.home.name}</span>
-                <Flag team={m.home} />
-              </div>
-
-              <ScoreSelect
-                label={`${m.home.name} score`}
-                value={p.home}
-                onChange={(v) => setScore(m.id, 'home', v)}
-                disabled={locked}
-              />
-
-              <div className="center">
-                <div className="datetime">
-                  {m.date}, {cetTime(m.kickoff)}{' '}
-                  <span className="tz">(CET)</span>
-                </div>
-                <div className="venue">{m.venue}</div>
-                {locked && <div className="lock-badge">🔒 Locked</div>}
-              </div>
-
-              <ScoreSelect
-                label={`${m.away.name} score`}
-                value={p.away}
-                onChange={(v) => setScore(m.id, 'away', v)}
-                disabled={locked}
-              />
-
-              <div className="team team-away">
-                <span className="team-name">{m.away.name}</span>
-                <Flag team={m.away} />
-              </div>
-            </div>
-          )
-        })}
+        {pastMatches.length > 0 && (
+          <button
+            type="button"
+            className="show-past"
+            onClick={() => setShowPast((s) => !s)}
+          >
+            {showPast
+              ? '▲ Hide past matches'
+              : `▼ Show ${pastMatches.length} past matches`}
+          </button>
+        )}
+        {showPast && pastMatches.map(renderMatch)}
+        {upcomingMatches.map(renderMatch)}
+        {upcomingMatches.length === 0 && (
+          <p className="hint">All group-stage matches have kicked off.</p>
+        )}
       </div>
 
       <p className="hint">

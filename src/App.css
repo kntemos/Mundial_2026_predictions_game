@@ -152,6 +152,22 @@
   border-top: 1px solid var(--border);
 }
 
+.show-past {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text);
+}
+.show-past:hover {
+  color: var(--text-h);
+}
+
 .match {
   display: grid;
   grid-template-columns: 1fr auto minmax(180px, 1.4fr) auto 1fr;
