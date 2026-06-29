@@ -93,6 +93,23 @@ var KICKOFFS = {
   'DR Congo v Uzbekistan': '2026-06-28T01:30:00+02:00',
   'Algeria v Austria': '2026-06-28T04:00:00+02:00',
   'Jordan v Argentina': '2026-06-28T04:00:00+02:00',
+  // Round of 32
+  'South Africa v Canada': '2026-06-28T21:00:00+02:00',
+  'Brazil v Japan': '2026-06-29T19:00:00+02:00',
+  'Germany v Paraguay': '2026-06-29T22:30:00+02:00',
+  'Netherlands v Morocco': '2026-06-30T03:00:00+02:00',
+  'Ivory Coast v Norway': '2026-06-30T19:00:00+02:00',
+  'France v Sweden': '2026-06-30T23:00:00+02:00',
+  'Mexico v Ecuador': '2026-07-01T03:00:00+02:00',
+  'England v DR Congo': '2026-07-01T18:00:00+02:00',
+  'Belgium v Senegal': '2026-07-01T22:00:00+02:00',
+  'USA v Bosnia and Herzegovina': '2026-07-02T02:00:00+02:00',
+  'Spain v Austria': '2026-07-02T21:00:00+02:00',
+  'Portugal v Croatia': '2026-07-03T01:00:00+02:00',
+  'Switzerland v Algeria': '2026-07-03T05:00:00+02:00',
+  'Australia v Egypt': '2026-07-03T20:00:00+02:00',
+  'Argentina v Cape Verde': '2026-07-04T00:00:00+02:00',
+  'Colombia v Ghana': '2026-07-04T03:30:00+02:00',
 };
 
 function isLockedServer(matchLabel) {
